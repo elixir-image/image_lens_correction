@@ -1,4 +1,4 @@
-defmodule ImageLensCorrection do
+defmodule Image.LensCorrection do
   @moduledoc """
 
 

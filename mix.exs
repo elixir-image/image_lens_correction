@@ -7,6 +7,7 @@ defmodule ImageLensCorrection.MixProject do
       version: "0.1.0",
       elixir: "~> 1.14",
       start_permanent: Mix.env() == :prod,
+      elixirc_paths: elixirc_paths(Mix.env()),
       deps: deps()
     ]
   end
@@ -23,4 +24,17 @@ defmodule ImageLensCorrection.MixProject do
       {:image, path: "../image"}
     ]
   end
+
+  defp preferred_cli_env() do
+    []
+  end
+
+  def aliases do
+    []
+  end
+
+  defp elixirc_paths(:test), do: ["lib", "mix", "test"]
+  defp elixirc_paths(:dev), do: ["lib", "mix", "bench"]
+  defp elixirc_paths(:release), do: ["lib"]
+  defp elixirc_paths(_), do: ["lib"]
 end
