@@ -177,7 +177,8 @@ defmodule Image.LensCorrection do
     # Get the radial distance from the centre
     # which is band 0 of the polar image
     r = Complex.polar!(index)[0]
-    r = r / max!(r)
+    max = Image.get_pixel!(r, 0, 0)
+    r = r / max
 
     # Correction function from https://lensfun.github.io/calibration-tutorial/lens-vignetting.html
     # Also http://download.macromedia.com/pub/labs/lensprofile_creator/lensprofile_creator_cameramodel.pdf
