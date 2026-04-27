@@ -43,7 +43,15 @@ defmodule ImageLensCorrection.MixProject do
       # cannot be scoped to `:dev` here.
       {:sweet_xml, "~> 0.7"},
       {:ex_doc, "~> 0.34", only: [:dev], runtime: false}
-    ]
+    ] ++ maybe_json_polyfill()
+  end
+
+  defp maybe_json_polyfill do
+    if Code.ensure_loaded?(:json) do
+      []
+    else
+      [{:json_polyfill, "~> 0.2 or ~> 1.0"}]
+    end
   end
 
   defp package do
