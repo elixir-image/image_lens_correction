@@ -10,7 +10,9 @@ defmodule Image.DistortionCorrection.Test do
     validate_path = validate_path(validate_file)
 
     image = Image.open!(image_path)
-    {:ok, corrected} = Image.LensCorrection.radial_distortion_correction(image, -0.007715, 0.086731, 0.0)
+
+    {:ok, corrected} =
+      Image.LensCorrection.radial_distortion_correction(image, -0.007715, 0.086731, 0.0)
 
     # {:ok, _image} = Image.write(corrected, validate_path)
     assert_images_equal(corrected, validate_path)

@@ -10,6 +10,9 @@
 # Where third-party dependencies like ExDoc output generated docs.
 /doc/
 
+# Ignore .fetch files in case you like to edit your project deps locally.
+/.fetch
+
 # If the VM crashes, it generates a dump, let's ignore it too.
 erl_crash.dump
 
@@ -17,7 +20,43 @@ erl_crash.dump
 *.ez
 
 # Ignore package tarball (built via "mix hex.build").
-image_lens_correction-*.tar
+image-*.tar
 
 # Temporary files, for example, from tests.
 /tmp/
+
+# Validation error images
+/test/support/images/did_not_match
+
+# Mac metadata
+.DS_Store
+
+# Minio
+.minio.sys/
+
+# Performance result images
+test/perf/*.png
+test/perf/*.jpeg
+
+# Local .iex.exs
+.iex.exs
+
+# ML model
+*.pt
+*.onnx
+
+# ASDF
+.tool-versions
+
+# Mise
+mise.toml
+
+# Don't add the lensfun DTD to the repo
+lensfun-database.dtd
+
+# Failed tests
+test/support/did_not_match/
+
+# Claude
+CLAUDE.md
+.claude
