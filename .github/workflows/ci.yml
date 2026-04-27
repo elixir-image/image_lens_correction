@@ -1,0 +1,90 @@
+name: Elixir CI
+
+on:
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["main"]
+
+env:
+  MIX_ENV: test
+  # `vix` ships precompiled NIF and a precompiled libvips, so the
+  # CI does not need to build libvips from source.
+  VIX_COMPILATION_MODE: PRECOMPILED_NIF_AND_LIBVIPS
+
+permissions:
+  contents: read
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    name: Test on OTP ${{matrix.otp}} / Elixir ${{matrix.elixir}}
+    strategy:
+      fail-fast: false
+      # Track the same OTP / Elixir matrix as the `:image` library
+      # since `:image` is our primary dependency. `:image` requires
+      # OTP 26 or later.
+      matrix:
+        include:
+          - otp: "26.2.5.6"
+            elixir: "1.17.2-otp-26"
+          - otp: "27.2"
+            elixir: "1.17.2-otp-27"
+          - otp: "27.2"
+            elixir: "1.18.1-otp-27"
+          - otp: "28.3.1"
+            elixir: "1.19.4-otp-28"
+          - otp: "28.3.1"
+            elixir: "1.20.0-rc.4-otp-28"
+            lint: true
+
+    steps:
+      - name: Set up Elixir
+        uses: erlef/setup-beam@v1
+        with:
+          otp-version: ${{matrix.otp}}
+          elixir-version: ${{matrix.elixir}}
+
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Cache deps
+        id: cache-deps
+        uses: actions/cache@v5
+        env:
+          cache-name: cache-elixir-deps
+        with:
+          path: deps
+          key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-${{ env.cache-name }}-
+
+      - name: Cache compiled build
+        id: cache-build
+        uses: actions/cache@v5
+        env:
+          cache-name: cache-compiled-build
+        with:
+          path: _build
+          key: ${{ runner.os }}-mix-${{ env.cache-name }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-mix-${{ env.cache-name }}-
+            ${{ runner.os }}-mix-
+
+      - name: Install dependencies
+        run: mix deps.get
+
+      - name: Compile without warnings
+        run: mix compile --warnings-as-errors
+        if: ${{ matrix.lint }}
+
+      - name: Check formatting
+        run: mix format --check-formatted
+        if: ${{ matrix.lint }}
+
+      - name: Run tests
+        run: mix test
+
+      - name: Build hex package (verify release readiness)
+        run: MIX_ENV=prod mix hex.build
+        if: ${{ matrix.lint }}
