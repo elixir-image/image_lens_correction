@@ -60,3 +60,5 @@ test/support/did_not_match/
 # Claude
 CLAUDE.md
 .claude
+
+image_lens_correction-*.tar

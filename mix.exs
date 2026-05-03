@@ -9,7 +9,7 @@ defmodule ImageLensCorrection.MixProject do
     [
       app: @app_name,
       version: @version,
-      elixir: "~> 1.14",
+      elixir: "~> 1.17",
       description: description(),
       package: package(),
       deps: deps(),
