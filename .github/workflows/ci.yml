@@ -85,6 +85,19 @@ jobs:
       - name: Run tests
         run: mix test
 
+      - name: Cache Dialyzer PLT
+        if: ${{ matrix.lint }}
+        uses: actions/cache@v5
+        with:
+          path: priv/plts
+          key: ${{ runner.os }}-plt-${{ matrix.otp }}-${{ matrix.elixir }}-${{ hashFiles('**/mix.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-plt-${{ matrix.otp }}-${{ matrix.elixir }}-
+
+      - name: Run Dialyzer
+        run: mix dialyzer --format github
+        if: ${{ matrix.lint }}
+
       - name: Build hex package (verify release readiness)
         run: MIX_ENV=prod mix hex.build
         if: ${{ matrix.lint }}

@@ -14,6 +14,7 @@ defmodule Image.LensFun do
   @db_save_file "priv/lensfun/lensfun.etf"
 
   @doc "Absolute path to the bundled lensfun ETF database."
+  @doc subject: "Database", since: "0.1.0"
   def db_path do
     Application.app_dir(@app_name, @db_save_file)
   end
@@ -22,6 +23,7 @@ defmodule Image.LensFun do
   Load and decode the bundled lensfun database. Cached in the persistent
   term cache so repeated calls are cheap.
   """
+  @doc subject: "Database", since: "0.1.0"
   def db do
     case :persistent_term.get({__MODULE__, :db}, :missing) do
       :missing ->
@@ -63,6 +65,7 @@ defmodule Image.LensFun do
   * `{:error, :not_found}`.
 
   """
+  @doc subject: "Database", since: "0.1.0"
   def find_lens(maker, lens_model, options \\ []) do
     crop_factor = Keyword.get(options, :crop_factor)
 
@@ -167,6 +170,7 @@ defmodule Image.LensFun do
 
   Returns `{:ok, %{model:, mount:, crop_factor:}}` or `{:error, :not_found}`.
   """
+  @doc subject: "Database", since: "0.1.0"
   def find_camera(maker, model) do
     list = Map.get(db().cameras, canonical_maker(maker), [])
 
@@ -186,6 +190,7 @@ defmodule Image.LensFun do
   endpoints handled by clamping. Returns `{:ok, distortion}` or
   `{:error, :no_calibration}`.
   """
+  @doc subject: "Database", since: "0.1.0"
   def interpolate_distortion(%{distortion: []}, _focal), do: {:error, :no_calibration}
 
   def interpolate_distortion(%{distortion: distortions}, focal) when is_number(focal) do
@@ -206,6 +211,7 @@ defmodule Image.LensFun do
 
   Returns `{:ok, tca}` or `{:error, :no_calibration}`.
   """
+  @doc subject: "Database", since: "0.1.0"
   def interpolate_tca(lens, focal)
 
   def interpolate_tca(%{tca: []}, _focal), do: {:error, :no_calibration}
@@ -226,6 +232,7 @@ defmodule Image.LensFun do
   aperture and distance using inverse-distance weighting (the same
   approach as lensfun's `InterpolateVignetting`).
   """
+  @doc subject: "Database", since: "0.1.0"
   def interpolate_vignetting(%{vignetting: []}, _focal, _aperture, _distance) do
     {:error, :no_calibration}
   end
@@ -309,6 +316,7 @@ defmodule Image.LensFun do
   map with keys `:make`, `:model`, `:lens_make`, `:lens_model`,
   `:focal_length`, `:aperture`, `:distance`, `:crop_factor`.
   """
+  @doc subject: "Database", since: "0.1.0"
   def metrics_from_exif_and_options(%Vimage{} = image, options \\ []) do
     exif =
       case Image.exif(image) do

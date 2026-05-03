@@ -17,7 +17,13 @@ defmodule ImageLensCorrection.MixProject do
       source_url: @source_url,
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
-      elixirc_paths: elixirc_paths(Mix.env())
+      elixirc_paths: elixirc_paths(Mix.env()),
+      dialyzer: [
+        ignore_warnings: ".dialyzer_ignore_warnings",
+        plt_add_apps: ~w(mix ex_unit)a,
+        plt_local_path: "priv/plts",
+        plt_core_path: "priv/plts"
+      ]
     ]
   end
 
@@ -42,7 +48,8 @@ defmodule ImageLensCorrection.MixProject do
       # database; pulled transitively by `:image` for XMP metadata so
       # cannot be scoped to `:dev` here.
       {:sweet_xml, "~> 0.7"},
-      {:ex_doc, "~> 0.34", only: [:dev], runtime: false}
+      {:ex_doc, "~> 0.34", only: [:dev], runtime: false},
+      {:dialyxir, "~> 1.0", only: [:dev, :test], runtime: false}
     ] ++ maybe_json_polyfill()
   end
 
@@ -92,7 +99,7 @@ defmodule ImageLensCorrection.MixProject do
         "CHANGELOG.md",
         "LICENSE.md"
       ],
-      formatters: ["html"],
+      formatters: ["html", "markdown"],
       groups_for_docs: [
         Distortion: &(&1[:subject] == "Distortion"),
         Database: &(&1[:subject] == "Database")

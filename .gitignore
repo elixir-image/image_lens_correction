@@ -62,3 +62,6 @@ CLAUDE.md
 .claude
 
 image_lens_correction-*.tar
+
+# Dialyzer PLTs
+/priv/plts/
